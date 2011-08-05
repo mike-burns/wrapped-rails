@@ -1,0 +1,1 @@
+require 'diesel/testing/integration'

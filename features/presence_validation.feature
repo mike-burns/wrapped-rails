@@ -9,7 +9,6 @@ Feature: validates_presence_of toggles the wrapped value
     And I add the "wrapped-rails" gem from this project
     #And I reset the Bundler environment variable
     And I run `bundle install --local`
-    And I successfully run `bundle exec rails generate cucumber:install`
 
     When I write to "app/controllers/users_controller.rb" with:
     """
@@ -19,7 +18,7 @@ Feature: validates_presence_of toggles the wrapped value
       end
     end
     """
-    When I write to "db/migration/1_create_users.rb" with:
+    When I write to "db/migrate/1_create_users.rb" with:
     """
     class CreateUsers < ActiveRecord::Migration
       def self.up
@@ -32,7 +31,7 @@ Feature: validates_presence_of toggles the wrapped value
     When I write to "app/models/user.rb" with:
     """
     class User < ActiveRecord::Base
-      validate_presence_of :first_name, :last_name
+      validates_presence_of :first_name, :last_name
     end
     """
     When I write to "app/views/users/index.html.erb" with:
@@ -44,15 +43,21 @@ Feature: validates_presence_of toggles the wrapped value
     When I write to "test/integration/the_test.rb" with:
     """
     require 'test_helper'
-    class TheTest < ActiveSupport::IntegrationTest
+    class TheTest < ActionController::IntegrationTest
       def test_the_app
         User.create!(:first_name => 'Roy', :middle_name => 'Grace', :last_name => 'Biv')
         User.create!(:first_name => 'The', :last_name => 'Pope')
-        visit users_path
+        get users_path
         assert page.has_content?("Roy G. Biv")
         assert page.has_content?("The Pope")
       end
     end
+    """
+    When I write to "config/routes.rb" with:
+    """
+    Testapp::Application.routes.draw do
+      resources :users
+    end    
     """
 
     When I successfully run `bundle exec rake db:migrate --trace`

@@ -26,4 +26,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency('diesel')
   s.add_development_dependency('aruba')
   s.add_development_dependency('rails')
+  s.add_development_dependency('sqlite3')
 end

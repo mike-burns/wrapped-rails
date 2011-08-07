@@ -106,6 +106,23 @@ Is That All?
 This gem uses the `wrapped` gem underneath, which can do a whole lot more than
 just `unwrap_or`. Check it out for the details.
 
+Installation
+------------
+
+Add this to your `Gemfile` the run the `bundle` command:
+
+    gem 'wrapped-rails'
+
+Details
+-------
+
+Adding this gem to your Rails app will affect every model. A field is wrapped
+if two conditions are met:
+
+* there is no `validates_presence_of` on that field, and
+* the database schema does not have a NOT NULL constraint paired with a default
+  value.
+
 Copyright
 ---------
 Copyright 2011 Mike Burns

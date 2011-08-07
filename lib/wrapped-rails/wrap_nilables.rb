@@ -11,13 +11,6 @@ module WrapNilables
 
     private
 
-    def nilable?(attr_name)
-      attr_name != 'id' && \
-        self.class.validators_on(attr_name).none? do |v|
-        v.is_a?(ActiveModel::Validations::PresenceValidator)
-        end
-    end
-
     def wrap_attributes!
       @attributes.each do |attr_name, value|
         if nilable?(attr_name)
@@ -26,6 +19,22 @@ module WrapNilables
           end
         end
       end
+    end
+
+    def nilable?(attr_name)
+      attr_name != 'id' &&
+        !presence_validated?(attr_name) &&
+        !null_constraint?(attr_name)
+    end
+
+    def presence_validated?(attr_name)
+      self.class.validators_on(attr_name).any? do |v|
+        v.is_a?(ActiveModel::Validations::PresenceValidator)
+      end
+    end
+
+    def null_constraint?(attr_name)
+      !self.class.columns_hash[attr_name].default.nil?
     end
   end
 end
